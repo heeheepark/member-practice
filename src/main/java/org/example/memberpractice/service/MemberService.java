@@ -24,7 +24,7 @@ public class MemberService {
         return new MemberCreateResponse(save.getId(), save.getName(), save.getEmail());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<MemberGetResponse> getAll() {
         List<Member> members = memberRepository.findAll();
         List<MemberGetResponse> dtos = new ArrayList<>();
@@ -36,7 +36,7 @@ public class MemberService {
         return dtos;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public MemberGetResponse getOne(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("멤버를 찾을 수 없습니다.")
