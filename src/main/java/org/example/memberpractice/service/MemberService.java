@@ -51,8 +51,7 @@ public class MemberService {
                 () -> new IllegalArgumentException("멤버를 찾을 수 없습니다.")
         );
 
-        member.updateName(request.getName());
-        member.updateEmail(request.getEmail());
+        member.update(request.getName(), request.getEmail());
 
         return new MemberUpdateResponse(member.getId(), member.getName(), member.getEmail());
     }

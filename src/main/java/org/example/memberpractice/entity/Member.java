@@ -23,12 +23,8 @@ public class Member {
         this.email = email;
     }
 
-    public void updateName(String name) {
+    public void update(String name, String email) {
         this.name = name;
-    }
-
-    public void updateEmail(String email) {
         this.email = email;
     }
-
 }
