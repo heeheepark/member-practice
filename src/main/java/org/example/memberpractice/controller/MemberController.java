@@ -42,4 +42,12 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.update(memberId, request));
     }
 
+    @DeleteMapping("/member/{memberId}")
+    public ResponseEntity<List<MemberGetResponse>> delete(
+            @PathVariable Long memberId
+    ) {
+        memberService.delete(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.getAll());
+    }
 }

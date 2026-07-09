@@ -56,4 +56,14 @@ public class MemberService {
 
         return new MemberUpdateResponse(member.getId(), member.getName(), member.getEmail());
     }
+
+    @Transactional
+    public void delete(Long memberId) {
+        boolean existence = memberRepository.existsById(memberId);
+        if (!existence) {
+            throw new IllegalArgumentException("존재하지 않는 멤버입니다.");
+        }
+
+        memberRepository.deleteById(memberId);
+    }
 }
