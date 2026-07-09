@@ -1,9 +1,7 @@
 package org.example.memberpractice.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.memberpractice.dto.MemberCreateRequest;
-import org.example.memberpractice.dto.MemberCreateResponse;
-import org.example.memberpractice.dto.MemberGetResponse;
+import org.example.memberpractice.dto.*;
 import org.example.memberpractice.entity.Member;
 import org.example.memberpractice.repository.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -45,5 +43,17 @@ public class MemberService {
         );
 
         return new MemberGetResponse(member.getId(), member.getName(), member.getEmail());
+    }
+
+    @Transactional
+    public MemberUpdateResponse update(Long memberId, MemberUpdateRequest request) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new IllegalArgumentException("멤버를 찾을 수 없습니다.")
+        );
+
+        member.updateName(request.getName());
+        member.updateEmail(request.getEmail());
+
+        return new MemberUpdateResponse(member.getId(), member.getName(), member.getEmail());
     }
 }

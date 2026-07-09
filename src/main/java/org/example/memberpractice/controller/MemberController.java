@@ -1,9 +1,7 @@
 package org.example.memberpractice.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.memberpractice.dto.MemberCreateRequest;
-import org.example.memberpractice.dto.MemberCreateResponse;
-import org.example.memberpractice.dto.MemberGetResponse;
+import org.example.memberpractice.dto.*;
 import org.example.memberpractice.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +32,14 @@ public class MemberController {
             @PathVariable Long memberId
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.getOne(memberId));
+    }
+
+    @PutMapping("/member/{memberId}")
+    public ResponseEntity<MemberUpdateResponse> update(
+            @PathVariable Long memberId,
+            @RequestBody MemberUpdateRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.update(memberId, request));
     }
 
 }
