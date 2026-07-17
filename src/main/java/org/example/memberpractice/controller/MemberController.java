@@ -15,26 +15,26 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping("/member")
-    public ResponseEntity<MemberCreateResponse> save(
+    @PostMapping("/members")
+    public ResponseEntity<MemberCreateResponse> create(
             @RequestBody MemberCreateRequest request
     ) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.save(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.create(request));
     }
 
-    @GetMapping("/member")
+    @GetMapping("/members")
     public ResponseEntity<List<MemberGetResponse>> getAll() {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.getAll());
     }
 
-    @GetMapping("/member/{memberId}")
+    @GetMapping("/members/{memberId}")
     public ResponseEntity<MemberGetResponse> getOne(
             @PathVariable Long memberId
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.getOne(memberId));
     }
 
-    @PutMapping("/member/{memberId}")
+    @PutMapping("/members/{memberId}")
     public ResponseEntity<MemberUpdateResponse> update(
             @PathVariable Long memberId,
             @RequestBody MemberUpdateRequest request
@@ -42,12 +42,11 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.update(memberId, request));
     }
 
-    @DeleteMapping("/member/{memberId}")
+    @DeleteMapping("members/{memberId}")
     public ResponseEntity<List<MemberGetResponse>> delete(
             @PathVariable Long memberId
     ) {
         memberService.delete(memberId);
-
         return ResponseEntity.status(HttpStatus.OK).body(memberService.getAll());
     }
 }

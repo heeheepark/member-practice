@@ -9,22 +9,28 @@ import lombok.NoArgsConstructor;
 @Table(name = "members")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 50, nullable = false)
     private String name;
-    private String email;
 
-    public Member(String name, String email) {
+    @Column(unique = true, nullable = false)
+    private String email;
+    private String address;
+
+    public Member(String name, String email, String address) {
         this.name = name;
         this.email = email;
+        this.address = address;
     }
 
-    public void update(String name, String email) {
+    public void updateMember(String name, String email, String address) {
         this.name = name;
         this.email = email;
+        this.address = address;
     }
 }

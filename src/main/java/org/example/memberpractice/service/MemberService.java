@@ -6,6 +6,7 @@ import org.example.memberpractice.entity.Member;
 import org.example.memberpractice.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +18,11 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public MemberCreateResponse save(MemberCreateRequest request) {
-        Member member = new Member(request.getName(), request.getEmail());
-        Member save = memberRepository.save(member);
+    public MemberCreateResponse create(MemberCreateRequest request) {
+        Member member = new Member(request.getName(), request.getEmail(), request.getAddress());
+        Member saveMember = memberRepository.save(member);
 
-        return new MemberCreateResponse(save.getId(), save.getName(), save.getEmail());
+        return new MemberCreateResponse(saveMember.getId(), saveMember.getName(), saveMember.getEmail(), saveMember.getAddress(), member.getCreatedAt(), member.getModifiedAt());
     }
 
     @Transactional(readOnly = true)
@@ -30,37 +31,45 @@ public class MemberService {
         List<MemberGetResponse> dtos = new ArrayList<>();
 
         for (Member member : members) {
-            dtos.add(new MemberGetResponse(member.getId(), member.getName(), member.getEmail()));
+            dtos.add(new MemberGetResponse(member.getId(), member.getName(), member.getEmail(), member.getAddress(), member.getCreatedAt(), member.getModifiedAt()));
         }
 
         return dtos;
     }
 
     @Transactional(readOnly = true)
-    public MemberGetResponse getOne(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("멤버를 찾을 수 없습니다.")
+    public MemberGetResponse getOne(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new IllegalArgumentException("해당 멤버가 없습니다.")
         );
 
-        return new MemberGetResponse(member.getId(), member.getName(), member.getEmail());
+        return new MemberGetResponse(member.getId(), member.getName(), member.getEmail(), member.getAddress(), member.getCreatedAt(), member.getModifiedAt());
     }
 
     @Transactional
     public MemberUpdateResponse update(Long memberId, MemberUpdateRequest request) {
         Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new IllegalArgumentException("멤버를 찾을 수 없습니다.")
+                () -> new IllegalArgumentException("해당 멤버가 없습니다.")
         );
 
-        member.update(request.getName(), request.getEmail());
+        String memberEmail = member.getEmail();
+        String requestEmail = request.getEmail();
 
-        return new MemberUpdateResponse(member.getId(), member.getName(), member.getEmail());
+        if (ObjectUtils.nullSafeEquals(memberEmail, requestEmail)) {
+            throw new IllegalArgumentException("해당 이메일이 이미 존재합니다.");
+        }
+
+        member.updateMember(request.getName(), request.getEmail(), request.getAddress());
+
+        return new MemberUpdateResponse(member.getId(), member.getName(), member.getEmail(), member.getAddress(), member.getCreatedAt(), member.getModifiedAt());
     }
 
     @Transactional
     public void delete(Long memberId) {
         boolean existence = memberRepository.existsById(memberId);
+
         if (!existence) {
-            throw new IllegalArgumentException("존재하지 않는 멤버입니다.");
+            throw new IllegalArgumentException("해당 멤버가 없습니다.");
         }
 
         memberRepository.deleteById(memberId);
